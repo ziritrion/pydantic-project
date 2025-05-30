@@ -1,0 +1,1 @@
+This repo contains the files for the capstone project of the [Learning Pydantic: Advanced Data Validation In Python course by Andy Bek on Udemy](https://udemy.com/course/pydantic-advanced-data-validation).
