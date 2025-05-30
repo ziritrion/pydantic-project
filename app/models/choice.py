@@ -1,7 +1,11 @@
 from pydantic import BaseModel, Field
 from uuid import UUID, uuid4
 
-class Choice(BaseModel):
-    id: UUID = Field(default_factory=uuid4)
+class ChoiceCreate(BaseModel):
+    """Choice write data model, representing a single choice in a poll"""
     description: str = Field(min_length=1, max_length=100)
+
+class Choice(ChoiceCreate):
+    """Choice read model, with a label and auto-gen uuid"""
+    id: UUID = Field(default_factory=uuid4)
     label: int = Field(ge=1, le=5)
