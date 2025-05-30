@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.models.polls import Poll
+from app.models.polls import PollCreate
 
 app = FastAPI()
 
@@ -8,8 +8,9 @@ def test():
     return {"message": "Olakease"}
 
 @app.post("/polls/create")
-async def create_poll(poll: Poll) -> Poll:
-    return Poll(
-        title="my poll",
-        options=["yes", "no", "maybe"]
-    )
+def create_poll(poll: PollCreate):
+    new_poll = poll.create_poll()
+    return {
+        "detail": "Poll successfully created",
+        "poll_id": new_poll.id
+    }
