@@ -8,7 +8,8 @@ def test():
     return {"message": "Olakease"}
 
 @app.post("/polls/create")
-async def create_poll():
+async def create_poll(poll: Poll) -> Poll:
     return Poll(
+        title="my poll",
         options=["yes", "no", "maybe"]
     )
