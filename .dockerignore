@@ -1,0 +1,32 @@
+# Bytecode and Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Git and editor files
+.git/
+.gitignore
+*.swp
+*.swo
+*.bak
+.DS_Store
+.vscode/
+.idea/
+
+# Environment files
+.env
+.env.*
+!.env.local  # Include only this one for dev container or local use
+
+# Redis data
+redis/
+
+# Lock and metadata
+#*.lock
+#uv.lock

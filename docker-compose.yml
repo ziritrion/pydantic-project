@@ -1,0 +1,21 @@
+services:
+  fastapi:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+    env_file:
+      - .env.local  # Local dev config
+    environment:
+      REDIS_URL: redis://redis:6379
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis:/data  # Mount to local 'redis/' folder
+    command: ["redis-server", "--appendonly", "yes"]
+
+volumes: {}

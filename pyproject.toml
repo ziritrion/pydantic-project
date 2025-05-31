@@ -5,7 +5,14 @@ description = "Project with Pydantic and FastAPI, from a Udemy course"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "fastapi>=0.115.12",
+    "fastapi[standard]>=0.115.12",
     "pydantic>=2.11.5",
     "uvicorn>=0.34.2",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=8.3.5",
+    "watchfiles>=1.0.5",
 ]
