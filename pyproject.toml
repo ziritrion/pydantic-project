@@ -5,6 +5,7 @@ description = "Project with Pydantic and FastAPI, from a Udemy course"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "email-validator>=2.2.0",
     "fastapi[standard]>=0.115.12",
     "pydantic>=2.11.5",
     "python-dotenv>=1.1.0",
