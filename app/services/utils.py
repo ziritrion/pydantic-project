@@ -4,6 +4,7 @@ from uuid import UUID
 from typing import Optional
 
 from app.models.polls import Poll
+from app.models.votes import Vote
 
 redis_client = Redis(
     url=os.getenv("KV_REST_API_URL"),
@@ -26,4 +27,13 @@ def get_choice_id_by_label(poll_id: UUID, label: int) -> Optional[UUID]:
     for choice in poll.options:
         if choice.label == label:
             return choice.id
+    return None
+
+def save_vote(poll_id: UUID, vote: Vote) -> Optional[str]:
+    return redis_client.hset(f"votes:{poll_id}", vote.voter.email, vote.model_dump_json())
+    
+def get_vote(poll_id: UUID, email: str) -> Optional[Vote]:
+    vote_json = redis_client.hget(f"votes:{poll_id}", email)
+    if vote_json:
+        return Vote.model_validate_json(vote_json)
     return None
