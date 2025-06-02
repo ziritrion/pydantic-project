@@ -13,7 +13,7 @@ class Voter(VoterCreate):
 class Vote(BaseModel):
     """The Vote read model."""
     poll_id: UUID
-    choice_id: int
+    choice_id: UUID
     voter: Voter
 
 class VoteById(BaseModel):
