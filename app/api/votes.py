@@ -8,12 +8,24 @@ router = APIRouter()
 
 @router.post("/{poll_id}/id")
 def vote_by_id(poll_id: UUID, vote: VoteById):
-    # we check whether the poll is still active
     poll = utils.get_poll(poll_id=poll_id)
+    # we check whether the poll exists
+    if not poll:
+        raise HTTPException(
+            status_code=404,
+            detail="The poll was not found"
+        )
+    # we check whether the poll is still active
     if not poll.is_active():
         raise HTTPException(
             status_code=400,
             detail="The poll has expired"
+        )
+    # we check whether the vote id is valid
+    if vote.choice_id not in [choice.id for choice in poll.options]:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid choice id specified"
         )
     # we check whether the voter already voted in the poll
     if utils.get_vote(poll_id=poll_id, email=vote.voter.email):
@@ -33,8 +45,14 @@ def vote_by_id(poll_id: UUID, vote: VoteById):
 
 @router.post("/{poll_id}/label")
 def vote_by_label(poll_id: UUID, vote: VoteByLabel):
-    # we check whether the poll is still active
     poll = utils.get_poll(poll_id=poll_id)
+    # we check whether the poll exists
+    if not poll:
+        raise HTTPException(
+            status_code=404,
+            detail="The poll was not found"
+        )
+    # we check whether the poll is still active
     if not poll.is_active():
         raise HTTPException(
             status_code=400,
@@ -43,7 +61,10 @@ def vote_by_label(poll_id: UUID, vote: VoteByLabel):
     # We need to retrieve the UUID for the choice; we check whether it exists
     choice_id = utils.get_choice_id_by_label(poll_id=poll_id, label=vote.choice_label)
     if not choice_id:
-        raise HTTPException(status_code=400, detail="Invalid choice label provided.")
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid choice label provided"
+        )
     # we check whether the voter already voted in the poll
     if utils.get_vote(poll_id=poll_id, email=vote.voter.email):
         raise HTTPException(
