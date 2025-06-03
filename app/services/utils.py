@@ -39,10 +39,27 @@ def get_choice_id_by_label_given(poll: Poll, label: int) -> Optional[UUID]:
     return None
 
 def save_vote(poll_id: UUID, vote: Vote) -> Optional[str]:
-    return redis_client.hset(f"votes:{poll_id}", vote.voter.email, vote.model_dump_json())
+    vote_result = redis_client.hset(
+        key=f"votes:{poll_id}",
+        field=vote.voter.email,
+        value=vote.model_dump_json()
+    )
+    vote_count = redis_client.hincrby(
+        key=f"votes_count:{poll_id}",
+        field=str(vote.choice_id),
+        increment=1
+    )
     
 def get_vote(poll_id: UUID, email: str) -> Optional[Vote]:
     vote_json = redis_client.hget(f"votes:{poll_id}", email)
     if vote_json:
         return Vote.model_validate_json(vote_json)
     return None
+
+def get_vote_count(poll_id: UUID) -> dict[UUID, int]:
+    vote_counts = redis_client.hgetall(key=f"votes_count:{poll_id}")
+    return {
+        UUID(choice_id): int(count)
+        for choice_id, count in vote_counts.items()
+    }
+    
