@@ -20,6 +20,12 @@ def get_poll(poll_id: UUID) -> Optional[Poll]:
         return Poll.model_validate_json(poll_json)
     return None
 
+def get_all_polls() -> list[Poll]:
+    poll_keys = redis_client.keys("poll:*") # get all the poll keys
+    poll_jsons = redis_client.mget(*poll_keys) # batch get, unpacked list
+    polls = [Poll.model_validate_json(pj) for pj in poll_jsons if pj]        
+    return polls
+
 def get_choice_id_by_label(poll_id: UUID, label: int) -> Optional[UUID]:
     poll = get_poll(poll_id=poll_id)
     return get_choice_id_by_label_given(poll=poll, label=label)

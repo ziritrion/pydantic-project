@@ -25,3 +25,13 @@ def get_poll(poll_id: UUID):
             detail="Cannot retrieve poll: the poll does not exist"
         )
     return poll
+
+@router.get("/")
+def get_polls():
+    polls = utils.get_all_polls()
+    if not polls:
+        raise HTTPException(
+            status_code=404,
+            detail="No polls were found"
+        )
+    return polls
