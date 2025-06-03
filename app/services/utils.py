@@ -83,3 +83,11 @@ def get_poll_results(poll_id: UUID) -> Optional[PollResults]:
         total_votes=total_votes,
         results=results
     )
+    
+def delete_poll(poll_id:UUID) -> Optional[str]:
+    keys_to_delete = [
+        f"poll:{poll_id}",
+        f"votes:{poll_id}",
+        f"votes_count:{poll_id}"
+    ]
+    return redis_client.delete(*keys_to_delete)
