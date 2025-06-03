@@ -52,3 +52,8 @@ class Poll(PollCreate):
     options: list[Choice]
     created_at: datetime = Field(default_factory=lambda: datetime.now(tz=UTC))
     
+    def is_active(self) -> bool:
+        if self.expires_at is None:
+            return True
+        return datetime.now(tz=UTC) < self.expires_at
+    

@@ -8,7 +8,14 @@ router = APIRouter()
 
 @router.post("/{poll_id}/id")
 def vote_by_id(poll_id: UUID, vote: VoteById):
-    # first we check whether the voter already voted in the poll
+    # we check whether the poll is still active
+    poll = utils.get_poll(poll_id=poll_id)
+    if not poll.is_active():
+        raise HTTPException(
+            status_code=400,
+            detail="The poll has expired"
+        )
+    # we check whether the voter already voted in the poll
     if utils.get_vote(poll_id=poll_id, email=vote.voter.email):
         raise HTTPException(
             status_code=400,
@@ -26,6 +33,13 @@ def vote_by_id(poll_id: UUID, vote: VoteById):
 
 @router.post("/{poll_id}/label")
 def vote_by_label(poll_id: UUID, vote: VoteByLabel):
+    # we check whether the poll is still active
+    poll = utils.get_poll(poll_id=poll_id)
+    if not poll.is_active():
+        raise HTTPException(
+            status_code=400,
+            detail="The poll has expired"
+        )
     # We need to retrieve the UUID for the choice; we check whether it exists
     choice_id = utils.get_choice_id_by_label(poll_id=poll_id, label=vote.choice_label)
     if not choice_id:
