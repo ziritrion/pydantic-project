@@ -5,6 +5,7 @@ from typing import Optional
 
 from app.models.polls import Poll
 from app.models.votes import Vote
+from app.models.results import PollResults, Result
 
 redis_client = Redis(
     url=os.getenv("KV_REST_API_URL"),
@@ -62,4 +63,23 @@ def get_vote_count(poll_id: UUID) -> dict[UUID, int]:
         UUID(choice_id): int(count)
         for choice_id, count in vote_counts.items()
     }
-    
+
+def get_poll_results(poll_id: UUID) -> Optional[PollResults]:
+    poll = get_poll(poll_id=poll_id)
+    if not poll:
+        return None
+    vote_counts = get_vote_count(poll_id=poll_id)
+    total_votes = sum(vote_counts.values())
+    results = [
+        Result(
+            description=choice.description,
+            vote_count=vote_counts.get(choice.id, 0)
+        )
+        for choice in poll.options
+    ]
+    results = sorted(results, key=lambda x: x.vote_count, reverse=True) # ordering by vote_count, most votes goes first
+    return PollResults(
+        title=poll.title,
+        total_votes=total_votes,
+        results=results
+    )
