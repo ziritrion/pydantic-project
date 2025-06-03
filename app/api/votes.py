@@ -59,7 +59,8 @@ def vote_by_label(poll_id: UUID, vote: VoteByLabel):
             detail="The poll has expired"
         )
     # We need to retrieve the UUID for the choice; we check whether it exists
-    choice_id = utils.get_choice_id_by_label(poll_id=poll_id, label=vote.choice_label)
+    #choice_id = utils.get_choice_id_by_label(poll_id=poll_id, label=vote.choice_label)
+    choice_id = utils.get_choice_id_by_label_given(poll=poll, label=vote.choice_label)
     if not choice_id:
         raise HTTPException(
             status_code=400,

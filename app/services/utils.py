@@ -22,6 +22,9 @@ def get_poll(poll_id: UUID) -> Optional[Poll]:
 
 def get_choice_id_by_label(poll_id: UUID, label: int) -> Optional[UUID]:
     poll = get_poll(poll_id=poll_id)
+    return get_choice_id_by_label_given(poll=poll, label=label)
+
+def get_choice_id_by_label_given(poll: Poll, label: int) -> Optional[UUID]:
     if not poll:
         return None
     for choice in poll.options:
